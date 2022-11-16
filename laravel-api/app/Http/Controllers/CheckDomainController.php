@@ -21,12 +21,15 @@ class CheckDomainController extends Controller
 
         $result = json_decode($domainParser->parse($request->domain));
 
-        // If domain is valid parse domain information
-        if ($isValid = $result->validHostname) {
-            $result = json_decode($whoisParser->lookup($result->fqdn));
+        // If domain is not valid return isValid and name
+        if (!$isValid = $result->validHostname) {
+            return [
+                'name' => $request->domain,
+                'isValid' => $isValid,
+            ];
         }
 
-
+        $result = json_decode($whoisParser->lookup($result->fqdn));
 
         return [
             'name' => $result->name,

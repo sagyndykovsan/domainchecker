@@ -1,20 +1,35 @@
 <template>
 <div class="">
     <form @submit.prevent="checkDomains" >
-        <div class="flex flex-col max-w-md pt-3 pl-2 space-y-3">
+        <div class="flex flex-col max-w-md pt-3 pl-2 space-y-3 text-lg">
             <label for=""><h1>Insert your domains:</h1></label>
            <div class="flex items-center">
             <textarea v-model="domains" name="domains" id="domains" class="w-80 p-2 border border-2 border-gray-700"></textarea>
             <button type="submit" class="bg-indigo-500 p-2 px-3 rounded-sm ml-5">
-                Check
+                Проверить
             </button>
            </div>
         </div>
     </form>
 
-    <pre>
-        {{domainList}}
-    </pre>
+    <table class="mt-20 text-lg">
+        <tr class="grid grid-cols-4 gap-5 text-left bg-gray-300">
+            <th class="">Domain Name</th>
+            <th class="">is valid</th>
+            <th class="">is available</th>
+            <th class="">expire date</th>
+        </tr>
+        <tr v-for="(domain, i) in domainList" 
+        class="grid grid-cols-4 gap-5"
+        :class="[i % 2 != 0 ? 'bg-gray-300' : 'bg-gray-100',
+                    domain['isValid'] ? '' : 'bg-red-500',
+                    domain['registered'] ? '' : 'bg-emerald-500']">
+            <td>{{domain['name']}}</td>
+            <td>{{domain['isValid'] ? 'valid' : 'not valid'}}</td>
+            <td>{{domain['registered']  ? 'taken' : 'available'}}</td>
+            <td>{{domain['expire_date']}}</td>
+        </tr>
+    </table>
 </div>
 </template>
 
@@ -33,7 +48,6 @@ function checkDomains() {
     domainList.value = [];
 
     result.forEach(domain => {
-        console.log(domain)
         fetch('http://localhost:8000/api/test', {
             method: 'POST',
             headers: {
