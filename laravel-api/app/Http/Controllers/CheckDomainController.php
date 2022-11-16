@@ -18,7 +18,7 @@ class CheckDomainController extends Controller
     {
         $domainParser = new DomainParser('json');
         $whoisParser = new WhoisParser('json');
-        
+
         $result = json_decode($domainParser->parse($request->domain));
 
         // If domain is valid parse domain information
